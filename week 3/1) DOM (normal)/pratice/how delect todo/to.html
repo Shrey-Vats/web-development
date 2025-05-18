@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12</title>
+</head>
+<body>
+    <h1 class="todo1">Todo app</h1>
+    <h4 class="todo2">1. Take Class</h4>
+    <h4>2. Go out to eat</h4>
+    <div>
+        <input type="text" class="input-box">
+        <button>Add todo</button>
+    </div>
+
+    <script>
+        const todo = document.querySelector('.todo2')
+        const todo1 = document.querySelector('.todo1')
+
+        function delay(ms) {
+            return new Promise((Resolve) =>{
+            setTimeout(Resolve, ms)
+            })
+        }
+        async function coutdown() {
+           for (let i = 0; i <= 10; i++) {
+            console.log(`${i} second`)
+            await delay(1000)
+          }
+        }
+        coutdown()
+
+        todo1.textContent = 0
+        let countdown = todo1.textContent
+        function mark(){
+          console.log(countdown)
+          countdown++
+        }
+
+        setInterval(mark, 1000)
+
+    </script>
+</body>
+</html>

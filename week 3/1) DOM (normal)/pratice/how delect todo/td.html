@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><h1>s</h1></title>
+</head>
+<body>
+    <h4 class="todo">do gym</h4>
+    <h4 class="todo">go to awalk</h4>
+    <h4 class="todo">forget your cousions</h4>
+    <button onclick="onDelect()">Remove ToDo!</button>
+
+    <script>
+        function onDelect(){
+            const element = document.querySelector('.todo');
+            element.parentElement.removeChild(element)
+        }
+    </script>
+</body>
+</html>

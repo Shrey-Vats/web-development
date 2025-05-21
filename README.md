@@ -13,4 +13,4 @@ Welcome to my **Web Development Repository** — a curated collection of my
 
 ---
 
-Feel free to explore, clone, or contribute!
+Feel free to explore,

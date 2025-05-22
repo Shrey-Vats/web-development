@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>]Auth website</title>
+    <style>
+        /* Container styling */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Common styling for all form sections */
+.signup, .signin, .user-information {
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8e8e8;
+}
+
+/* Headers */
+.signup h4, .signin h4, .user-information h4 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+/* Different colors for each section header */
+.signup h4 {
+    color: #4CAF50;
+    border-bottom-color: #4CAF50;
+}
+
+.signin h4 {
+    color: #2196F3;
+    border-bottom-color: #2196F3;
+}
+
+.user-information h4 {
+    color: #FF9800;
+    border-bottom-color: #FF9800;
+}
+
+/* Form labels */
+.signup p, .signin p {
+    margin-bottom: 8px;
+    margin-top: 15px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.signup p:first-of-type, .signin p:first-of-type {
+    margin-top: 0;
+}
+
+/* Input fields */
+.signup input[type="text"],
+.signup input[type="password"],
+.signin input[type="text"],
+.signin input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.signup input[type="text"]:focus,
+.signup input[type="password"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.signin input[type="text"]:focus,
+.signin input[type="password"]:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.signup input::placeholder,
+.signin input::placeholder {
+    color: #999;
+}
+
+/* Buttons */
+.signup button,
+.signin button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.signup button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.signup button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.signin button {
+    background-color: #2196F3;
+    color: white;
+}
+
+.signin button:hover {
+    background-color: #1976D2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+.signup button:active,
+.signin button:active {
+    transform: translateY(0);
+}
+
+/* User information section */
+.user-information {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+    }
+    
+    .signup, .signin, .user-information {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .container {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+    
+    .user-information {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Body styling */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="signup">
+            <h4>Signup</h4>
+            <p>Username</p>
+            <input type="text" name="username" class="signup-username" placeholder="username">
+            <p>Password</p>
+            <input type="password" name="password" class="signup-password" placeholder="password">
+            <button onclick="signup()">Signup</button>
+        </div>
+        <div class="signin">
+            <h4>Signin</h4>
+            <p>Username</p>
+            <input type="text" name="username" class="username" placeholder="username">
+            <p>Password</p>
+            <input type="password" name="password" class="password" placeholder="password">
+            <button onclick="signin()">Signin</button>
+        </div>
+        <div class="user-information">
+            <h4>User information</h4>
+            <p>Username</p> <p class="user-username"></p>
+            <p>Password</p> <p class="user-password"></p>
+            <button onclick="logout()">log out</button>
+        </div>
+    </div>
+
+
+    <script>
+        async function signup(){
+            const username = document.querySelector(".signup-username").value
+            const password = document.querySelector(".signup-password").value
+
+            await axios.post("http://localhost:3000/signup", {
+                username: username,
+                password: password,
+            });
+            alert("you are sign up")
+        }
+        async function signin() {
+            const username = document.querySelector(".signup-username").value
+            const password = document.querySelector(".signup-password").value
+            const response = await axios.post("http://localhost:3000/signin", {
+                username: username,
+                password: password,
+            })
+            localStorage.setItem("token", response.data.token)
+
+            alert("you signin")
+        }
+            async function getUserInformation() {
+            const response = await axios.get("http://localhost:3000/me",{
+                headers: {
+                    token: localStorage.getItem("token")
+                }
+            })
+
+            document.querySelector('.user-username').innerHTML = response.data.username
+            document.querySelector('.user-password').innerHTML = response.data.password
+
+        }
+        getUserInformation()
+        
+    </script>
+</body>
+</html>

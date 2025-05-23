@@ -1,0 +1,407 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <style>
+        /* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    max-width: 1200px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Common Card Styles */
+.signup, .signin, .user-information {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px 35px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+    max-width: 350px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signup:hover, .signin:hover, .user-information:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+}
+
+/* Headers */
+h4 {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+h4::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Input Groups */
+.input-username, .input-password {
+    margin-bottom: 25px;
+}
+
+.input-username p, .input-password p {
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
+}
+
+/* Input Fields */
+input[type="text"] {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    color: #2c3e50;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #667eea;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+input[type="text"]::placeholder {
+    color: #adb5bd;
+    font-size: 14px;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Primary Buttons (Signup/Signin) */
+.signup button:first-of-type,
+.signin button,
+.user-information button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.signup button:first-of-type:hover,
+.signin button:hover,
+.user-information button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Secondary Button (Already have account) */
+.signup button:last-of-type, .signin button:last-of-type {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+    margin-bottom: 0;
+}
+
+.signup button:last-of-type:hover, .signin button:last-of-type:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* User Information Styles */
+.user-information {
+    background: rgba(255, 255, 255, 0.98);
+}
+
+.username, .password {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 15px;
+}
+
+.username:last-of-type, .password:last-of-type {
+    border-bottom: none;
+    margin-bottom: 25px;
+}
+
+.username p:first-child, .password p:first-child {
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.user-username, .user-password {
+    color: #6c757d;
+    font-size: 14px;
+    font-style: italic;
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+/* Logout Button Specific */
+.user-information button {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+}
+
+.user-information button:hover {
+    box-shadow: 0 12px 25px rgba(220, 53, 69, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+        padding: 15px;
+    }
+    
+    .signup, .signin, .user-information {
+        max-width: 100%;
+        padding: 30px 25px;
+    }
+    
+    h4 {
+        font-size: 24px;
+    }
+    
+    input[type="text"], button {
+        padding: 12px 18px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .signup, .signin, .user-information {
+        padding: 25px 20px;
+    }
+    
+    h4 {
+        font-size: 22px;
+        margin-bottom: 25px;
+    }
+    
+    .input-username, .input-password {
+        margin-bottom: 20px;
+    }
+}
+
+/* Animation for smooth transitions */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.signup, .signin, .user-information {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Focus states for accessibility */
+button:focus {
+    outline: 3px solid rgba(102, 126, 234, 0.5);
+    outline-offset: 2px;
+}
+
+/* Improved visual hierarchy */
+.signup {
+    order: 1;
+}
+
+.signin {
+    order: 2;
+}
+
+.user-information {
+    order: 3;
+}
+    </style>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="signup">
+            <h4>Signup User</h4>
+            <div class="input-username">
+                <p>username</p>
+                <input type="text" placeholder="Enter your username" class="signup-username">
+            </div>
+            <div class="input-password">
+                <p>password</p>
+                <input type="text" placeholder="Enter your password" class="signup-password">
+            </div>
+            <button onclick="signup()">Signup User</button>
+            <button onclick="haveAccount()">ALredy have account</button>
+        </div>
+        
+        <div class="signin">
+            <h4>Signin User</h4>
+            <div class="input-username">
+                <p>username</p>
+                <input type="text" placeholder="Enter your username" class="signin-username">
+            </div>
+            <div class="input-password">
+                <p>password</p>
+                <input type="text" placeholder="Enter your password" class="signin-password">
+            </div>
+            <button onclick="signin()">Signin User</button>
+            <button onclick="notHaveAccount()">Not have account</button>
+        </div>
+        
+        <div class="user-information">
+            <div class="username">
+                <p>Username:</p> 
+                <p class="user-username">Not logged in</p>
+            </div>
+            <div class="password">
+                <p>Password:</p> 
+                <p class="user-password">Hidden</p>
+            </div>
+            <button onclick="logout()">Logout User</button>
+        </div>
+    </div>
+
+    <script>
+        const signupContainer = document.querySelector('.signup')
+        const signinContainer = document.querySelector('.signin')
+        const UserInformation = document.querySelector('.user-information')
+
+        async function signup(){
+            const username = document.querySelector(".signup-username").value;
+            const password = document.querySelector(".signup-password").value;
+
+            const response = await axios.post("http://localhost:4000/signup", {
+                username: username,
+                password: password,
+            })
+
+            if(!response){
+                return alert(" NOOO error")
+            }
+
+            alert('Yup! Success')
+        }
+        async function signin() {
+            const username = document.querySelector(".signin-username").value;
+            const password = document.querySelector(".signin-password").value;
+
+            const response = await axios.post("http://localhost:4000/signin", {
+                username: username,
+                password: password,
+            })
+            if(!response){
+                return alert("NOOOOO!")
+            }
+            localStorage.setItem("token", response.data.token)
+            alert("Yup!!  Signin Successfuly")
+        }
+        async function getUserInformations() {
+            const token = localStorage.getItem("token")
+            const response = await axios.get("http://localhost:4000/me", {
+                headers: {
+                    token: token,
+                }
+            })
+            const username = document.querySelector(".user-username")
+            const password = document.querySelector(".user-password")
+
+            password.innerHTML = response.data.password;
+            username.innerHTML = response.data.username;
+        }
+        function logout(){
+            localStorage.clear();
+            signinContainer.style.display = "block";
+            signupContainer.style.display = "none";
+            UserInformation.style.display = "none";
+}
+
+        getUserInformations()
+
+        function haveAccount(){
+            signinContainer.style.display = "block"
+            signupContainer.style.display = "none"
+            UserInformation.style.display = "none"
+        }
+        function notHaveAccount(){
+            signinContainer.style.display = "none"
+            signupContainer.style.display = "block"
+            UserInformation.style.display = "none"
+        }
+
+        if(!localStorage.getItem("token")){
+            signinContainer.style.display = "none"
+            signupContainer.style.display = "block"
+            UserInformation.style.display = "none"
+        } else{
+            signinContainer.style.display = "none"
+            signupContainer.style.display = "none"
+            UserInformation.style.display = "block"
+        }
+</script>
+</body>
+</html>

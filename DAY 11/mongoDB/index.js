@@ -8,7 +8,7 @@ app.use(express.json())
 
 const JWT_SCREAT = "helloshreyvatstopscriatejwtkeydidyouabletohackitnoooitmostsafestone"
 mongoose.connect(
-  "mongodb+srv://amya:ft98a0AU6RRdjKpi@cluster0.nfhh8jh.mongodb.net/todo-app-database"
+  "mongodb+srv://your_mongodb-key/todo-app-database"
 );
 
 app.post("/signup", async (req, res)=> {

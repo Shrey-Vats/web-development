@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+    }
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      width: 420px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+    }
+    .input-group button {
+      padding: 12px 20px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 0 8px 8px 0;
+    }
+    .input-group button:hover {
+      background: #0069d9;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #f9f9f9;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px;
+      position: relative;
+    }
+    .todo-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+    .todo-content span {
+      cursor: pointer;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: #6c757d;
+    }
+    .menu {
+      position: relative;
+    }
+    .menu-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .dropdown {
+      position: absolute;
+      right: 0;
+      top: 30px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .dropdown button {
+      padding: 8px 12px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .dropdown button:hover {
+      background: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Todo App</h1>
+    <div class="input-group">
+      <input type="text" id="new-task" placeholder="What needs to be done?">
+      <button id="add-btn">Add</button>
+    </div>
+    <ul id="task-list"></ul>
+  </div>
+
+  <script>
+    let tasks = [];
+
+    const newTaskInput = document.getElementById('new-task');
+    const addBtn = document.getElementById('add-btn');
+    const taskList = document.getElementById('task-list');
+
+    addBtn.addEventListener('click', addTask);
+    newTaskInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    function addTask() {
+      const text = newTaskInput.value.trim();
+      if (!text) return;
+      tasks.push({ text, completed: false });
+      newTaskInput.value = '';
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      renderTasks();
+    }
+
+    function editTask(index) {
+      const newText = prompt('Edit task:', tasks[index].text);
+      if (newText !== null) {
+        tasks[index].text = newText.trim() || tasks[index].text;
+        renderTasks();
+      }
+    }
+
+    function toggleComplete(index) {
+      tasks[index].completed = !tasks[index].completed;
+      renderTasks();
+    }
+
+    function toggleDropdown(dropdown) {
+      const isVisible = dropdown.style.display === 'flex';
+      document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+      dropdown.style.display = isVisible ? 'none' : 'flex';
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+
+        const content = document.createElement('div');
+        content.className = 'todo-content';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.completed;
+        checkbox.addEventListener('change', () => toggleComplete(index));
+
+        const span = document.createElement('span');
+        span.textContent = task.text;
+        if (task.completed) span.classList.add('completed');
+
+        content.appendChild(checkbox);
+        content.appendChild(span);
+
+        const menu = document.createElement('div');
+        menu.className = 'menu';
+
+        const menuBtn = document.createElement('button');
+        menuBtn.className = 'menu-btn';
+        menuBtn.innerHTML = '&#8942;';
+
+        const dropdown = document.createElement('div');
+        dropdown.className = 'dropdown';
+
+        const editOption = document.createElement('button');
+        editOption.textContent = 'Edit';
+        editOption.addEventListener('click', () => editTask(index));
+
+        const deleteOption = document.createElement('button');
+        deleteOption.textContent = 'Delete';
+        deleteOption.addEventListener('click', () => deleteTask(index));
+
+        dropdown.appendChild(editOption);
+        dropdown.appendChild(deleteOption);
+
+        menuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleDropdown(dropdown);
+        });
+
+        document.addEventListener('click', () => {
+          dropdown.style.display = 'none';
+        });
+
+        menu.appendChild(menuBtn);
+        menu.appendChild(dropdown);
+
+        li.appendChild(content);
+        li.appendChild(menu);
+
+        taskList.appendChild(li);
+      });
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>

@@ -1,23 +1,32 @@
-# 🧠 Devvolution - Day 18
+# 📅 Day 17 – React Core Concepts | #Devvolution
 
-## What I Did Today
+Welcome to Day 16 of my **#Devvolution** journey – a path toward mastering full-stack development and Web3!
 
-Today was a solid hands-on coding day! I spent over **5 hours** working on a **demo project** to implement and reinforce everything I’ve learned over the past 2 days.
+Today’s focus was on diving deep into **React fundamentals**. Here's a summary of what I learned and implemented:
 
-## Concepts Practiced
-- `useState` — managing local component state
-- `useEffect` with **cleanup functions** — understanding component lifecycle
-- **Props** — data flow between components
-- Component structuring and reusability
-- Code organization and best practices
+## 📘 Concepts Covered
 
-## Reflection
-I realized that applying concepts in a real project is the best way to retain and deeply understand them. The bugs, the refactoring, and the testing really solidified my learning.
+- **🔹 useState** – Managing dynamic state in functional components
+- **🔹 useEffect** – Performing side effects like data fetching and timers
+- **🔹 Cleanup Functions** – Preventing memory leaks from intervals and subscriptions
+- **🔹 Conditional Rendering** – Rendering components based on dynamic conditions
+- **🔹 Component Structure & Props** – Breaking UI into reusable parts and passing data
+- **🔹 Event Handling** – Handling user interactions like clicks and input
 
-## Next Step
-I'll be enhancing this demo with additional React features like **conditional rendering**, **lifting state**, and **custom hooks**.
+## 🚀 Learning Outcome
+
+I'm beginning to see how the **React lifecycle** works and how to manage side effects effectively. The idea of **thinking in components** is becoming more natural.
+
+Every day, I’m getting closer to mastering **React**, **Next.js**, **TypeScript**, and eventually diving into **Solana** and **Web3**. Onward! 🔥
+---
+
+## 📎 Connect
+
+- 📌 Follow my journey on [LinkedIn](https://linkedin.com/in/shrey-vats) and [X (Twitter)](https://x.com/)
+- 📁 Explore the full repository: [Devvolution GitHub](https://github.com/Shrey-Vats/Devvolution)
 
 ---
 
-🛠 Repo:
-📅 Devvolution Day 18
+### 🏷️ Tags
+
+`#ReactJS` `#100DaysOfCode` `#FrontendDevelopment` `#Devvolution` `#JavaScript` `#LearningInPublic` `#NextJS` `#Web3`

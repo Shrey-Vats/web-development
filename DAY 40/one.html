@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pure HTML Chess</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+    h1 { margin-bottom: 10px; }
+    #turn { margin-bottom: 15px; font-weight: bold; }
+    #chessboard {
+      display: grid;
+      grid-template-columns: repeat(8, 60px);
+      grid-template-rows: repeat(8, 60px);
+      border: 2px solid #333;
+    }
+    .tile {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      user-select: none;
+      cursor: pointer;
+    }
+    .light { background-color: #f0d9b5; }
+    .dark { background-color: #b58863; }
+    .selected { outline: 3px solid yellow; }
+    .highlight { background-color: rgba(0,255,0,0.3); }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    @media (max-width: 600px) {
+      #chessboard {
+        grid-template-columns: repeat(8, 40px);
+        grid-template-rows: repeat(8, 40px);
+      }
+      .tile { font-size: 24px; width: 40px; height: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Chess Game</h1>
+  <div id="turn">Turn: White</div>
+  <div id="chessboard"></div>
+  <button onclick="resetGame()">Reset Game</button>
+
+  <script>
+    const boardEl = document.getElementById("chessboard");
+    const turnEl = document.getElementById("turn");
+
+    const pieces = {
+      r: "♜", n: "♞", b: "♝", q: "♛", k: "♚", p: "♟",
+      R: "♖", N: "♘", B: "♗", Q: "♕", K: "♔", P: "♙"
+    };
+
+    let board = [];
+    let selected = null;
+    let currentTurn = 'w'; // 'w' = white, 'b' = black
+
+    function initBoard() {
+      board = [
+        ["r","n","b","q","k","b","n","r"],
+        ["p","p","p","p","p","p","p","p"],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["P","P","P","P","P","P","P","P"],
+        ["R","N","B","Q","K","B","N","R"]
+      ];
+    }
+
+    function renderBoard() {
+      boardEl.innerHTML = "";
+      for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+          const tile = document.createElement("div");
+          tile.classList.add("tile");
+          tile.classList.add((row + col) % 2 === 0 ? "light" : "dark");
+          tile.dataset.row = row;
+          tile.dataset.col = col;
+          tile.textContent = pieces[board[row][col]] || "";
+          tile.addEventListener("click", onTileClick);
+          boardEl.appendChild(tile);
+        }
+      }
+    }
+
+    function onTileClick(e) {
+      const row = parseInt(e.currentTarget.dataset.row);
+      const col = parseInt(e.currentTarget.dataset.col);
+      const piece = board[row][col];
+
+      if (selected) {
+        if (isSameTile(selected, {row, col})) {
+          clearSelection();
+          return;
+        }
+        if (isValidMove(selected.row, selected.col, row, col)) {
+          movePiece(selected.row, selected.col, row, col);
+          currentTurn = currentTurn === 'w' ? 'b' : 'w';
+          turnEl.textContent = `Turn: ${currentTurn === 'w' ? 'White' : 'Black'}`;
+        }
+        clearSelection();
+      } else if (piece && pieceColor(piece) === currentTurn) {
+        selected = { row, col };
+        highlightMoves(row, col);
+      }
+    }
+
+    function isSameTile(a, b) {
+      return a.row === b.row && a.col === b.col;
+    }
+
+    function clearSelection() {
+      selected = null;
+      document.querySelectorAll(".tile").forEach(tile => {
+        tile.classList.remove("selected", "highlight");
+      });
+    }
+
+    function pieceColor(piece) {
+      return piece === piece.toUpperCase() ? 'w' : 'b';
+    }
+
+    function isValidMove(fromRow, fromCol, toRow, toCol) {
+      const piece = board[fromRow][fromCol];
+      const target = board[toRow][toCol];
+      if (target && pieceColor(piece) === pieceColor(target)) return false;
+
+      const dRow = toRow - fromRow;
+      const dCol = toCol - fromCol;
+
+      switch (piece.toLowerCase()) {
+        case 'p':
+          const dir = piece === 'P' ? -1 : 1;
+          const startRow = piece === 'P' ? 6 : 1;
+          if (dCol === 0 && !target) {
+            if (dRow === dir) return true;
+            if (fromRow === startRow && dRow === 2 * dir && !board[fromRow + dir][fromCol]) return true;
+          } else if (Math.abs(dCol) === 1 && dRow === dir && target) return true;
+          break;
+        case 'r':
+          if (dRow === 0 || dCol === 0) return clearPath(fromRow, fromCol, toRow, toCol);
+          break;
+        case 'n':
+          return (Math.abs(dRow) === 2 && Math.abs(dCol) === 1) || (Math.abs(dRow) === 1 && Math.abs(dCol) === 2);
+        case 'b':
+          if (Math.abs(dRow) === Math.abs(dCol)) return clearPath(fromRow, fromCol, toRow, toCol);
+          break;
+        case 'q':
+          if (dRow === 0 || dCol === 0 || Math.abs(dRow) === Math.abs(dCol)) return clearPath(fromRow, fromCol, toRow, toCol);
+          break;
+        case 'k':
+          return Math.abs(dRow) <= 1 && Math.abs(dCol) <= 1;
+      }
+      return false;
+    }
+
+    function clearPath(fromRow, fromCol, toRow, toCol) {
+      const dRow = Math.sign(toRow - fromRow);
+      const dCol = Math.sign(toCol - fromCol);
+      let r = fromRow + dRow;
+      let c = fromCol + dCol;
+      while (r !== toRow || c !== toCol) {
+        if (board[r][c]) return false;
+        r += dRow;
+        c += dCol;
+      }
+      return true;
+    }
+
+    function movePiece(fromRow, fromCol, toRow, toCol) {
+      board[toRow][toCol] = board[fromRow][fromCol];
+      board[fromRow][fromCol] = "";
+      renderBoard();
+    }
+
+    function highlightMoves(row, col) {
+      document.querySelectorAll(".tile").forEach(tile => tile.classList.remove("highlight", "selected"));
+      document.querySelector(`[data-row='${row}'][data-col='${col}']`).classList.add("selected");
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (isValidMove(row, col, r, c)) {
+            document.querySelector(`[data-row='${r}'][data-col='${c}']`).classList.add("highlight");
+          }
+        }
+      }
+    }
+
+    function resetGame() {
+      initBoard();
+      renderBoard();
+      currentTurn = 'w';
+      turnEl.textContent = "Turn: White";
+    }
+
+    initBoard();
+    renderBoard();
+  </script>
+</body>
+</html>
